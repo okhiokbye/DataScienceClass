@@ -1,0 +1,86 @@
+---
+title: "Lab10_LewisCheng"
+author: "Lewis Cheng"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+#Q1
+```{R}
+library("caret")
+library("kernlab")
+
+data("GermanCredit")
+subCredit <- GermanCredit[,1:10]
+str(subCredit)
+
+help("GermanCredit")
+```
+
+#Q2
+```{R}
+trainList <- createDataPartition(y=subCredit$Class,p=.40,list=FALSE)  #making the training dataset
+
+```
+
+#Q3
+```{R}
+head(trainList)
+tail(trainList)
+#all good, trainList is list of indices balanced around class factor in Q2
+```
+
+#Q4
+```{R}
+#trainList is list of indices balanced around class factor in Q2
+```
+
+#Q5
+```{R}
+trainSet <- subCredit[trainList,] #make the train data set
+dim(trainSet)
+```
+
+#Q6
+```{R}
+testSet <- subCredit[-trainList, ] # make the test data set
+
+dim(testSet)
+```
+
+#Q7 
+```{R}
+#ignored
+```
+
+#Q8
+```{R}
+creditOutput <- ksvm(Class ~., data=trainSet, kernel='rbfdot', 
+                     kpar='automatic', C=5, cross=3,  prob.model=TRUE) #train the model
+creditOutput
+```
+
+#Q9
+```{R}
+#ok model
+```
+
+#Q10
+```{R}
+predictions <- predict(creditOutput, trainSet) #use prediction function to generate output
+str(predictions)
+```
+#Q11
+```{R}
+confusionMatrix <- table(trainSet[, 10], predictions)
+confusionMatrix # 60 bad, 4 erroneously marked as good 
+#276 good, 64 erroneously marked as bad??
+```
+#Q12
+```{R}
+diag(confusionMatrix) # 56/60 were correctly identified as bad, while 276/300 were correctly identified as good.
+```
+
+```{r}
+confusionMatrix(trainSet[, 10], predictions) #alll good
+```
